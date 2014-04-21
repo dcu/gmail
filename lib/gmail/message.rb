@@ -170,8 +170,8 @@ module Gmail
     end
     
     def message
-      @message ||= Mail.new(@gmail.mailbox(@mailbox.name) { 
-        fetch_email_data.attr["RFC822"] # RFC822
+      @message ||= Mail.new(@gmail.mailbox(@mailbox.name) {
+        @gmail.conn.uid_fetch(uid, ["RFC822"])[0].attr["RFC822"]
       })
     end
     alias_method :raw_message, :message
@@ -179,7 +179,7 @@ module Gmail
     protected 
     # Just one request to fetch all the data we need
     def fetch_email_data
-      @email_data ||= @gmail.conn.uid_fetch(uid, ["RFC822", 'ENVELOPE', 'X-GM-LABELS', 'X-GM-THRID'])[0]
+      @email_data ||= @gmail.conn.uid_fetch(uid, ['ENVELOPE', 'X-GM-LABELS', 'X-GM-THRID'])[0]
     end
   end # Message
 end # Gmail
